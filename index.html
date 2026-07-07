@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="fi" data-lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n-title="fi">Latovainion Lammas – Lammasta suoraan tilalta Jokioisista</title>
+  <meta name="description" content="Latovainion Lammas tuottaa laadukasta lampaanlihaa, villaa ja nahkaa Jokioisissa, Kanta-Hämeessä. Suoramyyntiä tilalta vuodesta 2009.">
+  <meta property="og:title" content="Latovainion Lammas – Jokioinen, Kanta-Häme">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --field:  #7a6040;
+      --hay:    #c8a040;
+      --birch:  #ede9df;
+      --cream:  #f8f5ee;
+      --moss:   #4a5c38;
+      --ink:    #1e1a14;
+      --warm:   #a0825a;
+
+      --serif: 'Instrument Serif', Georgia, serif;
+      --sans:  'Urbanist', system-ui, sans-serif;
+
+      --gap: clamp(2rem, 5vw, 5rem);
+      --max: 1280px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background: var(--cream);
+      overflow-x: hidden;
+    }
+
+    /* i18n */
+    .lang-sv, .lang-en { display: none; }
+    [data-lang="sv"] .lang-fi,
+    [data-lang="en"] .lang-fi { display: none; }
+    [data-lang="sv"] .lang-sv { display: inline; }
+    [data-lang="en"] .lang-en { display: inline; }
+    [data-lang="sv"] .lang-sv.blk,
+    [data-lang="en"] .lang-en.blk { display: block; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 2rem;
+      transition: background 0.35s, border-color 0.35s;
+    }
+    nav.scrolled {
+      background: rgba(248,245,238,0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(30,26,20,0.1);
+    }
+    /* Hamburger on LEFT */
+    .nav-hamburger {
+      background: none; border: none;
+      width: 26px; height: 18px;
+      cursor: pointer;
+      display: flex; flex-direction: column; justify-content: space-between;
+      order: 1;
+    }
+    .nav-hamburger span {
+      display: block; width: 100%; height: 2px;
+      background: var(--cream);
+      transition: background 0.3s, transform 0.35s, opacity 0.25s;
+    }
+    nav.scrolled .nav-hamburger span { background: var(--ink); }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+    .nav-hamburger.open span { background: var(--cream) !important; }
+    /* Wordmark on RIGHT */
+    .nav-wordmark {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--cream);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      order: 2;
+      transition: color 0.3s;
+    }
+    nav.scrolled .nav-wordmark { color: var(--ink); }
+
+    /* ── MENU OVERLAY ── */
+    .menu-overlay {
+      position: fixed; inset: 0;
+      background: var(--ink);
+      z-index: 400;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transform: translateX(-100%);
+      transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .menu-overlay.open { transform: translateX(0); }
+    .menu-links { list-style: none; text-align: center; }
+    .menu-links a {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-style: italic;
+      color: var(--cream);
+      text-decoration: none;
+      display: block;
+      padding: 0.5rem 0;
+      transition: color 0.2s;
+    }
+    .menu-links a:hover { color: var(--hay); }
+    .menu-lang-row { margin-top: 2.5rem; display: flex; gap: 1rem; }
+    .menu-lang-row button {
+      background: none;
+      border: 1px solid rgba(248,245,238,0.25);
+      color: var(--cream); font-family: var(--sans); font-size: 0.72rem;
+      font-weight: 600; letter-spacing: 0.15em;
+      padding: 0.4rem 1rem; cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .menu-lang-row button:hover,
+    .menu-lang-row button.active { border-color: var(--hay); color: var(--hay); }
+
+    /* ── HERO: RIBBON (5 vertical strips) ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 0.6fr 1fr 1.6fr 1fr 0.6fr;
+      min-height: 100vh;
+    }
+    .hero-strip { position: relative; overflow: hidden; }
+    .hero-strip-moss { background: var(--moss); }
+    .hero-strip-hay  { background: var(--hay); }
+    .hero-center {
+      background: var(--birch);
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: flex-end;
+      padding: clamp(2rem, 4vw, 4rem) clamp(1.5rem, 3vw, 3rem);
+      padding-bottom: clamp(4rem, 8vh, 7rem);
+    }
+    .hero-eyebrow {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--warm);
+      margin-bottom: 1.2rem;
+    }
+    .hero-h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 1.4rem;
+    }
+    .hero-p {
+      font-size: 0.9rem;
+      font-weight: 300;
+      line-height: 1.75;
+      color: rgba(30,26,20,0.65);
+      margin-bottom: 2.5rem;
+      max-width: 280px;
+    }
+    .btn {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cream);
+      background: var(--ink);
+      padding: 0.85rem 1.8rem;
+      text-decoration: none;
+      transition: background 0.25s;
+    }
+    .btn:hover { background: var(--field); }
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--ink);
+    }
+    .btn-outline:hover { background: var(--ink); color: var(--cream); }
+
+    /* ph placeholder blocks */
+    .ph {
+      position: absolute; inset: 0;
+      background: var(--birch);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.5rem;
+      color: rgba(30,26,20,0.2);
+    }
+    .ph svg { width: 32px; height: 32px; }
+    .ph-lbl { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.55; font-family: var(--sans); }
+    .ph-block { position: relative; overflow: hidden; background: var(--birch); }
+    .ph-block .ph { position: absolute; inset: 0; }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        grid-template-rows: 45vh auto;
+      }
+      .hero-strip-moss,
+      .hero-strip-hay  { display: none; }
+      .hero-strip:nth-child(2) { grid-row: 1; }
+      .hero-strip:nth-child(4) { display: none; }
+      .hero-center { grid-row: 2; padding-top: 3rem; }
+    }
+
+    /* ── PRODUCTS ── */
+    .products {
+      padding: var(--gap);
+      background: var(--cream);
+    }
+    .products-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+    .sec-eye {
+      font-family: var(--sans);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--warm);
+      display: block;
+      margin-bottom: 0.7rem;
+    }
+    .sec-h2 {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1.15;
+      margin-bottom: 3rem;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: rgba(30,26,20,0.1);
+    }
+    .product-card {
+      background: var(--cream);
+      padding: 2.5rem 2rem;
+    }
+    .product-photo {
+      aspect-ratio: 4/3;
+      margin-bottom: 1.8rem;
+    }
+    .p-num {
+      font-family: var(--serif);
+      font-size: 0.82rem;
+      font-style: italic;
+      color: var(--warm);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .product-card h3 {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-style: italic;
+      color: var(--ink);
+      margin-bottom: 0.8rem;
+    }
+    .product-card p {
+      font-size: 0.87rem;
+      line-height: 1.7;
+      font-weight: 300;
+      color: rgba(30,26,20,0.7);
+    }
+    @media (max-width: 760px) {
+      .product-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── STORY ── */
+    .story {
+      padding: var(--gap);
+      background: var(--birch);
+    }
+    .story-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .story-photo { aspect-ratio: 3/4; }
+    .story-text .sec-h2 { margin-bottom: 1.5rem; }
+    .story-text p {
+      font-size: 0.93rem;
+      line-height: 1.8;
+      font-weight: 300;
+      color: rgba(30,26,20,0.75);
+      margin-bottom: 1.1rem;
+    }
+    @media (max-width: 760px) {
+      .story-inner { grid-template-columns: 1fr; }
+      .story-photo { aspect-ratio: 3/2; }
+    }
+
+    /* ── HOW TO ORDER (SIGNATURE) ── */
+    .how-to {
+      background: var(--moss);
+      padding: var(--gap);
+    }
+    .how-to-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+    .how-to .sec-eye { color: rgba(248,245,238,0.5); }
+    .how-to .sec-h2 { color: var(--cream); }
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 0.5rem;
+      background: rgba(248,245,238,0.08);
+    }
+    .how-step {
+      background: rgba(248,245,238,0.04);
+      padding: 2.5rem 2rem 3rem;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .how-step:hover { background: rgba(248,245,238,0.09); }
+    .step-num {
+      font-family: var(--serif);
+      font-size: 4rem;
+      font-style: italic;
+      color: rgba(248,245,238,0.12);
+      line-height: 1;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+    .step-title {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--cream);
+      margin-bottom: 0.75rem;
+    }
+    .step-desc {
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(248,245,238,0.55);
+    }
+    .how-step-connector {
+      position: absolute; right: -1px; top: 50%; transform: translateY(-50%);
+      width: 1px; height: 40%; background: rgba(248,245,238,0.1);
+    }
+    @media (max-width: 760px) {
+      .how-steps { grid-template-columns: 1fr; }
+      .how-step-connector { display: none; }
+    }
+
+    /* ── CONTACT ── */
+    .contact {
+      padding: var(--gap);
+      background: var(--cream);
+      border-top: 3px solid var(--hay);
+    }
+    .contact-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .contact-text .sec-h2 { margin-bottom: 2.5rem; }
+    .c-group { margin-bottom: 1.8rem; }
+    .c-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--warm);
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+    .c-val {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .c-val a { color: var(--moss); text-decoration: none; }
+    .c-val a:hover { text-decoration: underline; }
+    .map-block {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: var(--birch);
+      position: relative;
+    }
+    .map-block iframe {
+      width: 100%; height: 100%;
+      border: none;
+      filter: grayscale(25%) contrast(1.05);
+    }
+    @media (max-width: 760px) {
+      .contact-inner { grid-template-columns: 1fr; }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      padding: 2.2rem var(--gap);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .f-name { font-family: var(--serif); font-style: italic; font-size: 1rem; color: rgba(248,245,238,0.75); }
+    .f-credit { font-size: 0.68rem; color: rgba(248,245,238,0.3); letter-spacing: 0.06em; }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+
+  <!-- MENU OVERLAY -->
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true">
+    <ul class="menu-links">
+      <li><a href="#tuotteet" class="m-link"><span class="lang-fi">Tuotteet</span><span class="lang-sv">Produkter</span><span class="lang-en">Products</span></a></li>
+      <li><a href="#tarina" class="m-link"><span class="lang-fi">Tarina</span><span class="lang-sv">Berättelse</span><span class="lang-en">Story</span></a></li>
+      <li><a href="#tilaus" class="m-link"><span class="lang-fi">Tilaus</span><span class="lang-sv">Beställning</span><span class="lang-en">Order</span></a></li>
+      <li><a href="#yhteystiedot" class="m-link"><span class="lang-fi">Yhteystiedot</span><span class="lang-sv">Kontakt</span><span class="lang-en">Contact</span></a></li>
+    </ul>
+    <div class="menu-lang-row">
+      <button onclick="setLang('fi')" id="mlb-fi">FI</button>
+      <button onclick="setLang('sv')" id="mlb-sv">SV</button>
+      <button onclick="setLang('en')" id="mlb-en">EN</button>
+    </div>
+  </div>
+
+  <!-- NAV: hamburger left, wordmark right -->
+  <nav id="mainNav">
+    <button class="nav-hamburger" id="hamburger" aria-label="Valikko" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#" class="nav-wordmark">Latovainion Lammas</a>
+  </nav>
+
+  <!-- HERO: RIBBON -->
+  <section class="hero" aria-label="Etusivu">
+    <!-- Strip 1: Moss green solid -->
+    <div class="hero-strip hero-strip-moss" aria-hidden="true"></div>
+
+    <!-- Strip 2: Photo left -->
+    <div class="hero-strip ph-block" aria-hidden="true">
+      <div class="ph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 17l4-8 4 5 3-3 4 6H3z"/><circle cx="16" cy="7" r="2"/></svg>
+        <span class="ph-lbl">sheep.jpg</span>
+      </div>
+    </div>
+
+    <!-- Strip 3: Center text -->
+    <div class="hero-center">
+      <p class="hero-eyebrow">
+        <span class="lang-fi">Jokioinen, Kanta-Häme — vuodesta 2009</span>
+        <span class="lang-sv">Jokioinen, Egentliga Tavastland — sedan 2009</span>
+        <span class="lang-en">Jokioinen, Kanta-Häme — since 2009</span>
+      </p>
+      <h1 class="hero-h1">
+        <span class="lang-fi">Lammasta<br>suoraan<br>tilalta</span>
+        <span class="lang-sv blk">Lamm<br>direkt<br>från gården</span>
+        <span class="lang-en blk">Lamb<br>direct<br>from the farm</span>
+      </h1>
+      <p class="hero-p">
+        <span class="lang-fi">Risto Seppälän tila tuottaa laadukasta lampaanlihaa, villaa ja nahkoja Kanta-Hämeessä. Tilaustoimituksia, myyntiä suoraan.</span>
+        <span class="lang-sv">Risto Seppäläs gård producerar lamm kött, ull och skinn av hög kvalitet i Kanta-Häme. Beställningsleveranser, direktförsäljning.</span>
+        <span class="lang-en">Risto Seppälä's farm produces quality lamb, wool and hides in Kanta-Häme. Order deliveries, sold direct.</span>
+      </p>
+      <a href="#tuotteet" class="btn">
+        <span class="lang-fi">Katso tuotteet</span>
+        <span class="lang-sv">Se produkter</span>
+        <span class="lang-en">See products</span>
+      </a>
+    </div>
+
+    <!-- Strip 4: Photo right -->
+    <div class="hero-strip ph-block" aria-hidden="true">
+      <div class="ph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 17l4-8 4 5 3-3 4 6H3z"/><circle cx="16" cy="7" r="2"/></svg>
+        <span class="ph-lbl">wool.jpg</span>
+      </div>
+    </div>
+
+    <!-- Strip 5: Hay gold solid -->
+    <div class="hero-strip hero-strip-hay" aria-hidden="true"></div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="products" id="tuotteet" aria-label="Tuotteet">
+    <div class="products-inner">
+      <div class="reveal">
+        <span class="sec-eye">
+          <span class="lang-fi">Tuotteet</span>
+          <span class="lang-sv">Produkter</span>
+          <span class="lang-en">Products</span>
+        </span>
+        <h2 class="sec-h2">
+          <span class="lang-fi">Lampaasta saatu</span>
+          <span class="lang-sv blk">Från fåret</span>
+          <span class="lang-en blk">From the sheep</span>
+        </h2>
+      </div>
+      <div class="product-grid">
+
+        <div class="product-card reveal">
+          <div class="product-photo ph-block">
+            <div class="ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16v2a6 6 0 01-12 0v2H4V6zM8 18h8"/></svg>
+              <span class="ph-lbl">meat.jpg</span>
+            </div>
+          </div>
+          <span class="p-num">01</span>
+          <h3>
+            <span class="lang-fi">Lampaanliha</span>
+            <span class="lang-sv">Lammkött</span>
+            <span class="lang-en">Lamb</span>
+          </h3>
+          <p>
+            <span class="lang-fi">Tuoretta ja pakastettua lampaanlihaa tilaustoimituksena. Kysy saatavuudesta ja sovitaan toimitus. Karitsaa ja täyskasvuista lammasta, erikseen tilattavat kokonaisen lampaan toimitukset.</span>
+            <span class="lang-sv">Färskt och fryst lammkött som orderbeställning. Fråga om tillgänglighet och vi avtalar leverans. Lamm och fullvuxna får, hela fårleveranser kan beställas separat.</span>
+            <span class="lang-en">Fresh and frozen lamb by order. Ask about availability and we arrange delivery. Lamb and mature sheep, whole-animal deliveries available on separate order.</span>
+          </p>
+        </div>
+
+        <div class="product-card reveal">
+          <div class="product-photo ph-block">
+            <div class="ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="10" r="4"/><path d="M6 21c0-3 3-5 6-5s6 2 6 5"/></svg>
+              <span class="ph-lbl">wool.jpg</span>
+            </div>
+          </div>
+          <span class="p-num">02</span>
+          <h3>
+            <span class="lang-fi">Villa</span>
+            <span class="lang-sv">Ull</span>
+            <span class="lang-en">Wool</span>
+          </h3>
+          <p>
+            <span class="lang-fi">Raakavilla suoraan kerintäkaudelta. Kotimainen suomenlampaan villa sopii kehräämiseen, huovuttamiseen ja muihin käsityötarkoituksiin. Kysy saatavuudesta kaudellisesti.</span>
+            <span class="lang-sv">Råull direkt från klippningssäsongen. Inhemsk finsk fårull lämpar sig för spinning, tovning och andra hantverksändamål. Fråga om säsongsbetonad tillgänglighet.</span>
+            <span class="lang-en">Raw fleece direct from shearing season. Finnish native wool is suitable for spinning, felting and other craft uses. Ask about seasonal availability.</span>
+          </p>
+        </div>
+
+        <div class="product-card reveal">
+          <div class="product-photo ph-block">
+            <div class="ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M9 3v18"/></svg>
+              <span class="ph-lbl">hides.jpg</span>
+            </div>
+          </div>
+          <span class="p-num">03</span>
+          <h3>
+            <span class="lang-fi">Nahka ja taljoihin</span>
+            <span class="lang-sv">Skinn och fällar</span>
+            <span class="lang-en">Hides and fleeces</span>
+          </h3>
+          <p>
+            <span class="lang-fi">Lampaannahkoja ja -taljoja eri käyttötarkoituksiin. Kotimaista, käsintehtyä — ei teollista massatuotantoa. Kysy tarkemmin puhelimitse tai sähköpostitse.</span>
+            <span class="lang-sv">Fårskinn och -fällar för olika användningsändamål. Inhemskt, handgjort — inte industriell massproduktion. Fråga mer per telefon eller e-post.</span>
+            <span class="lang-en">Sheepskins and fleece rugs for various uses. Domestic, handcrafted — not industrial mass production. Ask for details by phone or email.</span>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story" id="tarina" aria-label="Tarina">
+    <div class="story-inner">
+      <div class="story-photo ph-block reveal">
+        <div class="ph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20c0-3 3-5 6-5s6 2 6 5"/></svg>
+          <span class="ph-lbl">risto-portrait.jpg</span>
+        </div>
+      </div>
+      <div class="story-text">
+        <div class="reveal">
+          <span class="sec-eye">
+            <span class="lang-fi">Tarina</span>
+            <span class="lang-sv">Berättelse</span>
+            <span class="lang-en">Story</span>
+          </span>
+          <h2 class="sec-h2">
+            <span class="lang-fi">Latovainiolla<br>vuodesta 2009</span>
+            <span class="lang-sv blk">I Latovainio<br>sedan 2009</span>
+            <span class="lang-en blk">In Latovainio<br>since 2009</span>
+          </h2>
+        </div>
+        <p class="reveal">
+          <span class="lang-fi">Risto Seppälä perusti Latovainion Lampaan vuonna 2009. Tila sijaitsee Latovainiotiellä Jokioisissa, Kanta-Hämeessä, missä hämeläinen maaseutumaisema tarjoaa otolliset olosuhteet lampaiden pitoon.</span>
+          <span class="lang-sv">Risto Seppälä grundade Latovainion Lammas år 2009. Gården ligger vid Latovainiotie i Jokioinen, Kanta-Häme, där det tavastländska jordbrukslandskapet erbjuder goda förhållanden för fårskötsel.</span>
+          <span class="lang-en">Risto Seppälä founded Latovainion Lammas in 2009. The farm sits on Latovainiontie in Jokioinen, Kanta-Häme, where the agricultural Häme countryside offers ideal conditions for sheep farming.</span>
+        </p>
+        <p class="reveal">
+          <span class="lang-fi">Tilan toiminta perustuu suoramyyntiin: liha, villa ja nahat myydään suoraan asiakkaille tilauksia vastaan. Ei välikäsiä, ei jälleenmyyjiä. Se tarkoittaa parempaa hintaa tuottajalle ja tuoreempaa tuotetta ostajalle.</span>
+          <span class="lang-sv">Gårdens verksamhet bygger på direktförsäljning: kött, ull och skinn säljs direkt till kunderna mot beställning. Inga mellanhänder, inga återförsäljare. Det innebär ett bättre pris för producenten och en färskare produkt för köparen.</span>
+          <span class="lang-en">The farm operates on direct sales: meat, wool and hides sold directly to customers by order. No middlemen, no retailers. That means a better price for the producer and a fresher product for the buyer.</span>
+        </p>
+        <p class="reveal">
+          <span class="lang-fi">Pienimuotoinen tila tarkoittaa, että jokaiseen tuotteeseen pystytään kiinnittämään huomio. Se näkyy lihan laadussa, villan puhtaudessa ja siinä, miten asiakas otetaan vastaan.</span>
+          <span class="lang-sv">En liten gård innebär att varje produkt kan ges full uppmärksamhet. Det syns i köttets kvalitet, ullens renhet och i hur kunden tas emot.</span>
+          <span class="lang-en">A small-scale farm means every product can receive proper attention. That shows in the meat's quality, the wool's cleanliness and in how customers are welcomed.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW TO ORDER (SIGNATURE COMPONENT) -->
+  <section class="how-to" id="tilaus" aria-label="Miten tilata">
+    <div class="how-to-inner">
+      <div class="reveal">
+        <span class="sec-eye">
+          <span class="lang-fi">Tilaus</span>
+          <span class="lang-sv">Beställning</span>
+          <span class="lang-en">How to order</span>
+        </span>
+        <h2 class="sec-h2">
+          <span class="lang-fi">Näin tilaat</span>
+          <span class="lang-sv blk">Så här beställer du</span>
+          <span class="lang-en blk">How it works</span>
+        </h2>
+      </div>
+      <div class="how-steps">
+        <div class="how-step reveal">
+          <span class="step-num">01</span>
+          <h3 class="step-title">
+            <span class="lang-fi">Ota yhteyttä</span>
+            <span class="lang-sv">Kontakta oss</span>
+            <span class="lang-en">Get in touch</span>
+          </h3>
+          <p class="step-desc">
+            <span class="lang-fi">Soita tai lähetä sähköposti. Kerro mitä haluat tilata — lihaa, villaa vai nahkoja — ja missä määrissä. Vastataan nopeasti.</span>
+            <span class="lang-sv">Ring eller skicka ett e-post. Berätta vad du vill beställa — kött, ull eller skinn — och i vilka mängder. Vi svarar snabbt.</span>
+            <span class="lang-en">Call or send an email. Tell us what you'd like — meat, wool or hides — and in what quantities. We respond promptly.</span>
+          </p>
+          <div class="how-step-connector"></div>
+        </div>
+        <div class="how-step reveal">
+          <span class="step-num">02</span>
+          <h3 class="step-title">
+            <span class="lang-fi">Sovitaan toimitus</span>
+            <span class="lang-sv">Vi avtalar leverans</span>
+            <span class="lang-en">Arrange delivery</span>
+          </h3>
+          <p class="step-desc">
+            <span class="lang-fi">Sovitaan nouto tilalta tai toimituksesta. Latovainion lähialueille toimitetaan sovitusti. Maksu käteisellä tai tili-/verkkosiirrolla.</span>
+            <span class="lang-sv">Vi avtalar om avhämtning vid gården eller leverans. Leveranser till Latovainios näromräde möjliga. Betalning kontant eller via banköverföring.</span>
+            <span class="lang-en">We agree on farm pickup or delivery. Deliveries to the Latovainio area are possible by arrangement. Payment by cash or bank transfer.</span>
+          </p>
+          <div class="how-step-connector"></div>
+        </div>
+        <div class="how-step reveal">
+          <span class="step-num">03</span>
+          <h3 class="step-title">
+            <span class="lang-fi">Nauti tilalta</span>
+            <span class="lang-sv">Njut av gårdens produkter</span>
+            <span class="lang-en">Enjoy the produce</span>
+          </h3>
+          <p class="step-desc">
+            <span class="lang-fi">Kotimaista, pieneltä tilalta, ilman välikäsiä. Lampaanlihaa, jonka taustan tiedät. Villaa, joka tulee yhdeltä laumalta. Nauttiminen on helppoa, kun alkuperä on selvä.</span>
+            <span class="lang-sv">Inhemskt, från en liten gård, utan mellanhänder. Lammkött vars ursprung du känner till. Ull som kommer från en och samma hjord. Det är lätt att njuta när ursprunget är tydligt.</span>
+            <span class="lang-en">Domestic, from a small farm, with no middlemen. Lamb whose story you know. Wool from one flock. Enjoyment is easy when origin is clear.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="yhteystiedot" aria-label="Yhteystiedot">
+    <div class="contact-inner">
+      <div class="contact-text">
+        <div class="reveal">
+          <span class="sec-eye">
+            <span class="lang-fi">Yhteystiedot</span>
+            <span class="lang-sv">Kontaktuppgifter</span>
+            <span class="lang-en">Contact</span>
+          </span>
+          <h2 class="sec-h2">
+            <span class="lang-fi">Ota yhteyttä</span>
+            <span class="lang-sv blk">Ta kontakt</span>
+            <span class="lang-en blk">Get in touch</span>
+          </h2>
+        </div>
+        <div class="c-group reveal">
+          <span class="c-label">
+            <span class="lang-fi">Yrittäjä</span>
+            <span class="lang-sv">Företagare</span>
+            <span class="lang-en">Owner</span>
+          </span>
+          <div class="c-val">Risto Seppälä<br>Latovainion Lammas</div>
+        </div>
+        <div class="c-group reveal">
+          <span class="c-label">
+            <span class="lang-fi">Puhelin</span>
+            <span class="lang-sv">Telefon</span>
+            <span class="lang-en">Phone</span>
+          </span>
+          <div class="c-val"><a href="tel:+358400383412">0400 383 412</a></div>
+        </div>
+        <div class="c-group reveal">
+          <span class="c-label">
+            <span class="lang-fi">Sähköposti</span>
+            <span class="lang-sv">E-post</span>
+            <span class="lang-en">Email</span>
+          </span>
+          <div class="c-val"><a href="mailto:latovainion.lammas@hotmail.com">latovainion.lammas@hotmail.com</a></div>
+        </div>
+        <div class="c-group reveal">
+          <span class="c-label">
+            <span class="lang-fi">Osoite</span>
+            <span class="lang-sv">Adress</span>
+            <span class="lang-en">Address</span>
+          </span>
+          <div class="c-val">Latovainiontie 103<br>31620 Latovainio<br>Jokioinen, Kanta-Häme</div>
+        </div>
+        <div class="reveal" style="margin-top:2rem;">
+          <a href="tel:+358400383412" class="btn-outline btn">
+            <span class="lang-fi">Soita ja tilaa</span>
+            <span class="lang-sv">Ring och beställ</span>
+            <span class="lang-en">Call and order</span>
+          </a>
+        </div>
+      </div>
+      <div class="map-block reveal">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680!2d23.49!3d60.79!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sLatovainiontie+103%2C+31620+Latovainio!5e0!3m2!1sfi!2sfi!4v1720000000002"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Latovainion Lammas kartta"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="f-name">Latovainion Lammas</span>
+    <span class="f-credit">
+      <span class="lang-fi">Demo, suunnitellut Anton Jalonen — virallinen julkaisu odottaa omistajan hyväksyntää</span>
+      <span class="lang-sv">Demo, designad av Anton Jalonen — officiell publicering inväntar ägarens godkännande</span>
+      <span class="lang-en">Demo site, designed by Anton Jalonen — official launch pending owner approval</span>
+    </span>
+  </footer>
+
+  <script>
+    // i18n
+    function setLang(lang) {
+      document.documentElement.setAttribute('data-lang', lang);
+      ['fi','sv','en'].forEach(function(l) {
+        var mlb = document.getElementById('mlb-'+l);
+        if (mlb) mlb.classList.toggle('active', l === lang);
+      });
+      localStorage.setItem('ll-lang', lang);
+    }
+    (function() { setLang(localStorage.getItem('ll-lang') || 'fi'); })();
+
+    // Nav scroll
+    var nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', function() {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // Hamburger
+    var burger = document.getElementById('hamburger');
+    var overlay = document.getElementById('menuOverlay');
+    var isOpen = false;
+    function toggleMenu(open) {
+      isOpen = open;
+      burger.classList.toggle('open', open);
+      overlay.classList.toggle('open', open);
+      overlay.setAttribute('aria-hidden', String(!open));
+      burger.setAttribute('aria-expanded', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    burger.addEventListener('click', function() { toggleMenu(!isOpen); });
+    overlay.querySelectorAll('.m-link').forEach(function(a) {
+      a.addEventListener('click', function() { toggleMenu(false); });
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && isOpen) toggleMenu(false);
+    });
+
+    // Reveal
+    var revealEls = document.querySelectorAll('.reveal');
+    var io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    revealEls.forEach(function(el) { io.observe(el); });
+  </script>
+</body>
+</html>
